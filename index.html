@@ -505,10 +505,20 @@ async function openBibleChap(abbr,chap,bookId){
   document.getElementById('cnav').innerHTML=`${chap>1?`<button class="cnavbtn" onclick="openBibleChap('${abbr}',${chap-1},${b.id})"><i class="fa-solid fa-chevron-left"></i> Sebelumnya</button>`:''}${chap<b.ch?`<button class="cnavbtn" onclick="openBibleChap('${abbr}',${chap+1},${b.id})">Selanjutnya <i class="fa-solid fa-chevron-right"></i></button>`:''}`;
   document.getElementById('vlist').innerHTML='<div class="vskel"></div>'.repeat(4);
   try{
-    const res=await fetch(`https://beeble.vercel.app/api/v1/passage/${abbr.toLowerCase()}/${chap}?ver=tb`);
-    const d=await res.json();const vv=d.verses||d.data?.verses||[];
-    if(!vv.length)throw new Error();
-    document.getElementById('vlist').innerHTML=vv.map((v,i)=>`<div class="vcard vcard-plain" id="vc-${i+1}"><div class="vnum">${v.verse||i+1}</div><div class="v-ar">${v.content||v.text||''}</div></div>`).join('');
+    const res=await fetch(`https://beeble.vercel.app/api/v1/passage/${abbr}/${chap}`);
+    const d=await res.json();
+    const allV=d.data?.verses||[];
+    if(!allV.length)throw new Error();
+    let vhtml='';
+    allV.forEach(v=>{
+      if(v.type==='title'){
+        vhtml+=`<div style="font-family:var(--fs);font-size:.82rem;color:var(--gold2);margin:14px 0 6px;font-style:italic;opacity:.85">${v.content}</div>`;
+      } else if(v.type==='content'&&v.verse>0){
+        vhtml+=`<div class="vcard vcard-plain" id="vc-${v.verse}"><div class="vnum">${v.verse}</div><div class="v-ar">${v.content}</div></div>`;
+      }
+    });
+    if(!vhtml)throw new Error();
+    document.getElementById('vlist').innerHTML=vhtml;
   }catch{document.getElementById('vlist').innerHTML='<div class="empty"><div class="empty-i"><i class="fa-solid fa-cloud-slash"></i></div><div class="empty-t">Konten tidak tersedia</div><div class="empty-s">Coba lagi atau periksa koneksi.</div></div>';toast('Gagal memuat Alkitab','fa-triangle-exclamation');}
 }
 
