@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Kitab Suci Nusantara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* === RESET === */
+html,body{margin:0;padding:0;width:100%;overflow-x:hidden}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+
+/* === DARK THEME === */
+:root{
+  --bg0:#09090b; --bg1:#0e0e11; --bg2:#131316;
+  --bgc:#161619; --bgc2:#1c1c20;
+  --glass:rgba(9,9,11,.94);
+  --b1:rgba(255,255,255,.06); --b2:rgba(255,255,255,.11);
+  --t1:#e0ddd5; --t2:#7a766e; --t3:#424039;
+  --gold:#b09060; --gold2:#c8a870; --gold3:#7a6035;
+  --gdim:rgba(176,144,96,.1); --gglow:rgba(176,144,96,.2);
+  --sh:0 2px 14px rgba(0,0,0,.5);
+  --shh:0 6px 28px rgba(0,0,0,.6),0 0 0 1px rgba(176,144,96,.1);
+  --r:12px; --rsm:7px; --rlg:16px;
+  --e:.2s cubic-bezier(.4,0,.2,1);
+  --nh:58px;
+  --fl:'Inter',sans-serif; --fs:'Lora',serif; --fa:'Amiri Quran',serif;
+}
+/* === LIGHT THEME === */
+[data-theme=light]{
+  --bg0:#f5f0e6; --bg1:#efe9d9; --bg2:#e5deca;
+  --bgc:#faf5eb; --bgc2:#ede7d4;
+  --glass:rgba(245,240,230,.96);
+  --b1:rgba(120,90,30,.1); --b2:rgba(120,90,30,.18);
+  --t1:#1b1710; --t2:#56472f; --t3:#a08860;
+  --gold:#7a5820; --gold2:#9a7030; --gold3:#c09050;
+  --gdim:rgba(122,88,32,.08); --gglow:rgba(122,88,32,.16);
+  --sh:0 2px 12px rgba(80,55,20,.1);
+  --shh:0 6px 24px rgba(80,55,20,.16),0 0 0 1px rgba(122,88,32,.12);
+}
+
+body{
+  font-family:var(--fl);
+  background:var(--bg0);
+  color:var(--t1);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  transition:background .38s,color .38s;
+}
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--t3);border-radius:99px}
+body::before{
+  content:'';position:fixed;top:0;left:0;right:0;height:45vh;
+  background:radial-gradient(ellipse 60% 35% at 50% 0%,var(--gdim),transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* === LOADER === */
+#ldr{position:fixed;inset:0;z-index:9999;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .5s,transform .5s}
+#ldr.out{opacity:0;pointer-events:none;transform:scale(1.01)}
+.l-ring{width:64px;height:64px;border-radius:50%;border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;position:relative}
+.l-ring::before{content:'';position:absolute;inset:-1px;border-radius:50%;border:1.5px solid transparent;border-top-color:var(--gold2);animation:spin 1.8s linear infinite}
+.l-ring::after{content:'';position:absolute;inset:8px;border-radius:50%;border:1px solid transparent;border-bottom-color:var(--gold3);animation:spin 3s linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.l-ico{color:var(--gold);font-size:1.3rem;animation:lpls 2s ease-in-out infinite}
+@keyframes lpls{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.07)}}
+.l-name{font-family:var(--fs);font-size:1rem;color:var(--t1);letter-spacing:.04em}
+.l-sub{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--t3);font-weight:500}
+.l-bar{width:72px;height:1px;background:var(--b1);overflow:hidden;border-radius:99px}
+.l-fill{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold2));animation:lf 1.5s ease forwards}
+@keyframes lf{from{width:0}to{width:100%}}
+
+/* ===== NAVBAR ===== */
+nav{
+  position:fixed;top:0;left:0;width:100%;z-index:100;
+  height:var(--nh);
+  background:var(--glass);
+  backdrop-filter:blur(22px) saturate(130%);
+  -webkit-backdrop-filter:blur(22px) saturate(130%);
+  border-bottom:1px solid var(--b1);
+  transition:background .38s,border-color .38s;
+}
+/* wrapper: 3-column grid  left | center | right */
+.nwrap{
+  width:100%;height:100%;
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  padding:0 14px;
+  gap:8px;
+}
+/* LEFT col — back btn */
+#nbk{
+  justify-self:start;
+  width:32px;height:32px;
+  border-radius:50%;
+  border:1px solid var(--b1);
+  background:var(--bgc);
+  color:var(--t2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;cursor:pointer;
+  transition:opacity .25s,transform .25s,border-color .2s,color .2s,background .2s;
+  opacity:0;
+  pointer-events:none;
+  transform:scale(.7);
+  flex-shrink:0;
+}
+#nbk.show{opacity:1;pointer-events:auto;transform:scale(1)}
+#nbk:hover{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+/* CENTER col — brand */
+.nmid{justify-self:start;display:flex;align-items:center;transition:justify-self .25s}
+.nmid.center{justify-self:center}
+.brand{display:flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
+.brand-img{width:32px;height:32px;border-radius:7px;object-fit:contain;display:block;flex-shrink:0}
+.brand-name{font-family:var(--fs);font-size:.95rem;color:var(--t1);transition:color .38s}
+.brand-name em{color:var(--gold2);font-style:normal}
+/* RIGHT col */
+.nright{justify-self:end;display:flex;align-items:center;gap:6px}
+.sw{position:relative;display:flex;align-items:center}
+.si{font-family:var(--fl);background:var(--bgc);border:1px solid var(--b1);color:var(--t1);padding:0 12px 0 32px;height:33px;border-radius:99px;font-size:.78rem;width:160px;outline:none;transition:var(--e)}
+.si::placeholder{color:var(--t3)}
+.si:focus{width:198px;border-color:var(--gold);box-shadow:0 0 0 3px var(--gdim);background:var(--bgc2)}
+.si-ico{position:absolute;left:10px;color:var(--t3);font-size:.68rem;pointer-events:none;transition:color var(--e)}
+.sw:focus-within .si-ico{color:var(--gold)}
+.ibtn{width:33px;height:33px;border-radius:99px;border:1px solid var(--b1);background:var(--bgc);color:var(--t2);display:flex;align-items:center;justify-content:center;font-size:.78rem;cursor:pointer;transition:var(--e);position:relative;overflow:hidden}
+.ibtn:hover{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+.ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.13);pointer-events:none;transform:scale(0);animation:rip .5s linear}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+
+/* === MAIN === */
+main{padding-top:var(--nh);min-height:100vh;width:100%;position:relative;z-index:1}
+.page{width:100%}
+#ph{display:block}#pbook{display:none}#pchap{display:none}#pread{display:none}
+
+/* === HERO === */
+.hero{width:100%;max-width:640px;margin:0 auto;padding:clamp(32px,5vw,64px) 16px clamp(18px,3vw,32px);text-align:center;position:relative}
+.hwm{position:absolute;top:8px;left:50%;transform:translateX(-50%);font-family:var(--fa);font-size:8rem;color:var(--gold);opacity:.022;pointer-events:none;white-space:nowrap;line-height:1;user-select:none}
+.hbadge{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;background:var(--gdim);border:1px solid var(--b2);border-radius:99px;font-size:.63rem;color:var(--gold2);letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:16px}
+.htitle{font-family:var(--fs);font-size:clamp(1.6rem,5vw,2.8rem);line-height:1.2;color:var(--t1);margin-bottom:10px;font-weight:400}
+.htitle em{color:var(--gold2);font-style:italic}
+.hsub{font-size:clamp(.8rem,1.8vw,.9rem);color:var(--t2);line-height:1.75;font-weight:300;max-width:400px;margin:0 auto 22px}
+.hdiv{display:flex;align-items:center;gap:10px;justify-content:center;max-width:180px;margin:16px auto 20px}
+.hdiv-l{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--b2))}
+.hdiv-r{flex:1;height:1px;background:linear-gradient(90deg,var(--b2),transparent)}
+.hdiv-i{color:var(--gold);font-size:.58rem;opacity:.7}
+
+/* === RELIGION GRID === */
+.rgrid{width:100%;padding:0 16px 70px;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:10px}
+.rcard{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--rlg);padding:24px 22px 20px;cursor:pointer;transition:var(--e);position:relative;overflow:hidden;display:flex;flex-direction:column}
+.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity var(--e)}
+.rcard:hover{border-color:var(--b2);box-shadow:var(--shh);transform:translateY(-2px)}
+.rcard:hover::before{opacity:1}
+.rcard:active{transform:none}
+.rel-islam::before{background:linear-gradient(90deg,#3a7050,#5a9a70)}
+.rel-kristen::before{background:linear-gradient(90deg,#3050a0,#5070c0)}
+.rel-hindu::before{background:linear-gradient(90deg,#904820,#c07030)}
+.rel-buddha::before{background:linear-gradient(90deg,#705010,#a08030)}
+.rel-konghucu::before{background:linear-gradient(90deg,#701818,#b03030)}
+.r-ico{width:48px;height:48px;border-radius:12px;border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:14px;transition:var(--e);flex-shrink:0}
+.rcard:hover .r-ico{border-color:var(--b2);transform:scale(1.05)}
+.rel-islam .r-ico{background:rgba(58,112,80,.12);color:#5a9a70}
+.rel-kristen .r-ico{background:rgba(48,80,160,.12);color:#5878c0}
+.rel-hindu .r-ico{background:rgba(144,72,32,.12);color:#c07030}
+.rel-buddha .r-ico{background:rgba(112,80,16,.12);color:#a08030}
+.rel-konghucu .r-ico{background:rgba(112,24,24,.12);color:#b03030}
+.r-name{font-family:var(--fs);font-size:1.05rem;color:var(--t1);margin-bottom:3px;font-weight:500}
+.r-kitab{font-size:.76rem;color:var(--t2);margin-bottom:10px;font-style:italic}
+.r-desc{font-size:.76rem;color:var(--t2);line-height:1.65;margin-bottom:14px;font-weight:300;flex:1}
+.r-foot{display:flex;align-items:center;justify-content:space-between}
+.r-src{font-size:.66rem;color:var(--t3);display:flex;align-items:center;gap:4px}
+.r-src i{color:var(--gold);font-size:.58rem}
+.r-arr{width:26px;height:26px;border-radius:50%;border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.62rem;transition:var(--e)}
+.rcard:hover .r-arr{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+
+/* === PAGE HEADER === */
+.phdr{width:100%;padding:clamp(22px,4vw,44px) 16px 22px}
+.bc{display:flex;align-items:center;gap:5px;font-size:.7rem;color:var(--t3);margin-bottom:18px;flex-wrap:wrap}
+.bc span{cursor:pointer;transition:color var(--e)}.bc span:hover{color:var(--gold)}
+.bc .sep{opacity:.4;cursor:default}.bc .cur{color:var(--t2);cursor:default}
+.phero{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--rlg);padding:clamp(20px,4vw,36px);position:relative;overflow:hidden}
+.phero::before{content:'';position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,var(--gold3),transparent)}
+.phero-ico{font-size:1.5rem;margin-bottom:10px;color:var(--gold)}
+.phero-title{font-family:var(--fs);font-size:clamp(1.2rem,3vw,1.7rem);color:var(--t1);margin-bottom:4px}
+.phero-sub{font-size:.81rem;color:var(--t2);font-style:italic;margin-bottom:12px;font-family:var(--fs)}
+.phero-tags{display:flex;gap:6px;flex-wrap:wrap}
+.ptag{padding:4px 11px;background:var(--bg2);border:1px solid var(--b1);border-radius:99px;font-size:.66rem;color:var(--t2);font-weight:500}
+
+/* === LIST WRAP === */
+.lwrap{width:100%;margin:18px 0 70px;padding:0 16px}
+.lhead{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.lhead::after{content:'';flex:1;height:1px;background:var(--b1)}
+.lsrch{position:relative;margin-bottom:14px}
+.lsrch-inp{font-family:var(--fl);width:100%;background:var(--bgc);border:1px solid var(--b1);color:var(--t1);padding:10px 13px 10px 34px;border-radius:var(--r);font-size:.8rem;outline:none;transition:var(--e)}
+.lsrch-inp::placeholder{color:var(--t3)}
+.lsrch-inp:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gdim)}
+.lsrch-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--t3);font-size:.72rem;pointer-events:none}
+.irow{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--r);padding:13px 15px;cursor:pointer;display:flex;align-items:center;gap:13px;transition:var(--e);position:relative;margin-bottom:7px}
+.irow::after{content:'';position:absolute;left:0;top:10%;bottom:10%;width:2px;background:linear-gradient(180deg,var(--gold3),var(--gold2));opacity:0;border-radius:0 2px 2px 0;transition:opacity var(--e)}
+.irow:hover{border-color:var(--b2);background:var(--bgc2);box-shadow:var(--shh);transform:translateY(-1px)}
+.irow:hover::after{opacity:1}
+.irow:active{transform:none}
+.i-num{min-width:36px;height:36px;border-radius:50%;background:var(--bg2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-family:var(--fs);font-size:.78rem;color:var(--gold);flex-shrink:0;transition:var(--e)}
+.irow:hover .i-num{background:var(--gdim);border-color:var(--gold)}
+.i-info{flex:1;min-width:0}
+.i-name{font-size:.85rem;font-weight:500;color:var(--t1);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.i-sub{font-size:.68rem;color:var(--t3);font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.i-meta{font-size:.65rem;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:4px}
+.i-dot{width:3px;height:3px;border-radius:50%;background:var(--gold);opacity:.6;flex-shrink:0}
+.i-ar{font-family:var(--fa);font-size:1.15rem;color:var(--gold2);flex-shrink:0;opacity:.75;line-height:1;transition:var(--e)}
+.irow:hover .i-ar{opacity:1}
+.skel{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--r);height:88px;position:relative;overflow:hidden;margin-bottom:7px}
+.skel::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);animation:shim 1.6s ease-in-out infinite}
+@keyframes shim{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+
+/* === READ WRAP === */
+.rwrap{width:100%;margin:18px 0 70px;padding:0 16px}
+.player{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--r);padding:12px 16px;display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.pbtn{width:38px;height:38px;flex-shrink:0;border-radius:50%;background:linear-gradient(145deg,var(--gold3),var(--gold2));border:none;color:var(--bg0);font-size:.78rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--e);box-shadow:0 2px 12px var(--gglow)}
+.pbtn:hover{transform:scale(1.07);box-shadow:0 4px 18px var(--gglow)}
+.pbtn:active{transform:scale(.95)}
+.p-info{flex:1;min-width:0}
+.p-title{font-size:.76rem;font-weight:500;color:var(--t1);margin-bottom:6px}
+.p-bar{width:100%;height:2px;background:var(--b2);border-radius:99px;cursor:pointer}
+.p-fill{height:100%;background:linear-gradient(90deg,var(--gold3),var(--gold2));border-radius:99px;width:0%;transition:width .1s linear}
+.p-times{display:flex;justify-content:space-between;font-size:.62rem;color:var(--t3);margin-top:4px}
+.p-qari{font-size:.65rem;color:var(--t3);white-space:nowrap;display:flex;align-items:center;gap:4px}
+.p-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:blink 1.5s ease-in-out infinite}
+.p-dot.off{animation:none;background:var(--t3)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.cnav{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap}
+.cnavbtn{padding:7px 14px;border-radius:99px;border:1px solid var(--b1);background:var(--bgc);color:var(--t2);font-size:.74rem;font-family:var(--fl);font-weight:500;cursor:pointer;transition:var(--e);display:flex;align-items:center;gap:5px}
+.cnavbtn:hover{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+.vshead{font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--t3);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.vshead::after{content:'';flex:1;height:1px;background:var(--b1)}
+.bism{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--r);padding:20px;text-align:center;margin-bottom:8px;position:relative;overflow:hidden}
+.bism::before,.bism::after{content:'';position:absolute;left:16%;right:16%;height:1px;background:linear-gradient(90deg,transparent,var(--gold3),transparent)}
+.bism::before{top:0}.bism::after{bottom:0}
+.bism-t{font-family:var(--fa);font-size:clamp(1.3rem,3.5vw,1.8rem);color:var(--gold2);line-height:1.7;opacity:.88}
+.vcard{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--r);padding:18px 16px 14px;margin-bottom:7px;transition:var(--e);position:relative}
+.vcard:hover{border-color:var(--b2)}
+.vcard.on{border-color:var(--gold);background:rgba(176,144,96,.04)}
+.vcard.on::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:2px;background:linear-gradient(180deg,var(--gold3),var(--gold2));border-radius:0 2px 2px 0}
+.vnum{position:absolute;top:11px;right:11px;width:23px;height:23px;border-radius:50%;background:var(--bg2);border:1px solid var(--b1);display:flex;align-items:center;justify-content:center;font-size:.58rem;color:var(--t3);font-weight:600;transition:var(--e)}
+.vcard.on .vnum{background:var(--gdim);border-color:var(--gold);color:var(--gold2)}
+.v-ar{font-family:var(--fa);font-size:clamp(1.3rem,3.5vw,1.8rem);line-height:2;color:var(--t1);text-align:right;direction:rtl;padding-right:28px;margin-bottom:11px}
+.v-lat{font-size:.77rem;color:var(--t2);line-height:1.85;margin-bottom:8px;font-style:italic;font-weight:300}
+.v-tlbl{font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);font-weight:600;margin-bottom:3px}
+.v-tr{font-size:.83rem;color:var(--t1);line-height:1.75;border-top:1px solid var(--b1);padding-top:8px}
+.vcard-plain .v-ar{font-family:var(--fl);font-size:.86rem;text-align:left;direction:ltr;line-height:1.8;padding-right:28px}
+.vcard-plain .v-lat{display:none}
+.vskel{background:var(--bgc);border:1px solid var(--b1);border-radius:var(--r);height:115px;position:relative;overflow:hidden;margin-bottom:7px}
+.vskel::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);animation:shim 1.6s ease-in-out infinite}
+
+/* === TOAST === */
+#tbox{position:fixed;bottom:20px;right:16px;z-index:9998;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.toast{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--bgc2);border:1px solid var(--b2);border-radius:var(--rsm);box-shadow:var(--sh);font-size:.75rem;color:var(--t1);max-width:240px;pointer-events:auto;animation:tin .3s cubic-bezier(.34,1.56,.64,1) forwards}
+.toast.out{animation:tout .26s ease forwards}
+.tico{color:var(--gold);font-size:.72rem}
+@keyframes tin{from{opacity:0;transform:translateX(14px)}to{opacity:1;transform:none}}
+@keyframes tout{from{opacity:1;transform:none}to{opacity:0;transform:translateX(14px)}}
+
+/* === SCROLL TOP === */
+#stbtn{position:fixed;bottom:20px;left:16px;width:34px;height:34px;border-radius:50%;background:var(--bgc);border:1px solid var(--b1);color:var(--t2);font-size:.68rem;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:99;transition:var(--e);opacity:0;pointer-events:none;transform:translateY(4px)}
+#stbtn.on{opacity:1;pointer-events:auto;transform:none}
+#stbtn:hover{border-color:var(--gold);color:var(--gold);background:var(--gdim)}
+
+.pf{animation:pfin .32s ease forwards}
+@keyframes pfin{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+/* === EMPTY === */
+.empty{text-align:center;padding:52px 20px}
+.empty-i{font-size:2rem;color:var(--t3);margin-bottom:13px}
+.empty-t{font-size:.94rem;color:var(--t2);margin-bottom:5px;font-family:var(--fs)}
+.empty-s{font-size:.76rem;color:var(--t3)}
+
+/* === FOOTER === */
+footer{border-top:1px solid var(--b1);padding:16px;text-align:center;font-size:.68rem;color:var(--t3);position:relative;z-index:1}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{color:var(--gold2)}
+
+/* === RESPONSIVE === */
+@media(max-width:520px){
+  .sw{display:none}
+  #msrch{display:block!important}
+  .rgrid{grid-template-columns:1fr}
+  .player{flex-wrap:wrap}.p-qari{width:100%}
+}
+@media(max-width:340px){.i-ar{display:none}}
+</style>
+</head>
+<body>
+
+<div id="ldr">
+  <div class="l-ring"><div class="l-ico"><i class="fa-solid fa-om"></i></div></div>
+  <div class="l-name">Kitab Suci Nusantara</div>
+  <div class="l-sub">Lima Agama · Satu Bangsa</div>
+  <div class="l-bar"><div class="l-fill"></div></div>
+</div>
+<div id="tbox"></div>
+<div id="stbtn" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fa-solid fa-chevron-up"></i></div>
+
+<nav>
+  <div id="nwrap" class="nwrap">
+    <button id="nbk" onclick="navBack()"><i class="fa-solid fa-arrow-left"></i></button>
+    <div id="nmid" class="nmid">
+      <div class="brand" onclick="goHome()">
+        <img class="brand-img" src="https://files.catbox.moe/7pnpeq.png" alt="Logo">
+        <span class="brand-name">Kitab Suci<em>Nusantara</em></span>
+      </div>
+    </div>
+    <div class="nright">
+      <div class="sw"><input class="si" type="text" id="si" placeholder="Cari…" oninput="doSearch(this.value)"><i class="fa-solid fa-magnifying-glass si-ico"></i></div>
+      <button class="ibtn" onclick="toggleTheme(event)"><i id="thico" class="fa-solid fa-moon"></i></button>
+    </div>
+  </div>
+</nav>
+
+<main>
+<div id="ph" class="page">
+  <div id="msrch" style="display:none;padding:0 16px 10px">
+    <div class="sw" style="width:100%">
+      <input class="si" type="text" id="simob" placeholder="Cari…" oninput="doSearch(this.value)" style="width:100%">
+      <i class="fa-solid fa-magnifying-glass si-ico"></i>
+    </div>
+  </div>
+  <div class="hero">
+    <div class="hwm">Nusantara</div>
+    <div class="hbadge"><i class="fa-solid fa-star"></i>&nbsp;5 Agama Resmi Indonesia</div>
+    <h1 class="htitle">Kitab Suci<br><em>Nusantara</em></h1>
+    <p class="hsub">Jelajahi kitab suci dari seluruh agama yang diakui di Indonesia dalam satu platform yang elegan.</p>
+    <div class="hdiv"><div class="hdiv-l"></div><i class="fa-solid fa-star hdiv-i"></i><div class="hdiv-r"></div></div>
+  </div>
+  <div class="rgrid" id="rgrid"></div>
+</div>
+
+<div id="pbook" class="page">
+  <div class="phdr"><div class="bc" id="bc1"></div><div class="phero" id="phero1"></div></div>
+  <div class="lwrap">
+    <div class="lhead" id="lhead">Pilih Kitab</div>
+    <div class="lsrch" id="bsrch-wrap"><input class="lsrch-inp" type="text" id="bsrch" placeholder="Cari…" oninput="filterList(this.value)"><i class="fa-solid fa-magnifying-glass lsrch-ico"></i></div>
+    <div id="booklist"></div>
+  </div>
+</div>
+
+<div id="pchap" class="page">
+  <div class="phdr"><div class="bc" id="bc2"></div><div class="phero" id="phero2"></div></div>
+  <div class="lwrap"><div class="lhead">Pilih Pasal / Bab</div><div id="chaplist"></div></div>
+</div>
+
+<div id="pread" class="page">
+  <div class="phdr"><div class="bc" id="bc3"></div><div class="phero" id="phero3"></div></div>
+  <div class="rwrap">
+    <div id="audiobox"></div>
+    <div class="cnav" id="cnav"></div>
+    <div class="vshead">Ayat / Ayat Suci</div>
+    <div id="vlist"></div>
+  </div>
+</div>
+</main>
+
+<footer>
+  Data Al-Qur'an: <a href="https://equran.id" target="_blank">equran.id</a> &nbsp;·&nbsp;
+  Alkitab: <a href="https://beeble.vercel.app" target="_blank">Sabda API</a> &nbsp;·&nbsp;
+  Hindu, Buddha, Konghucu: Teks Publik Domain
+</footer>
+<audio id="aud" preload="none"></audio>
+
+<script>
+/* DATA */
+const REL=[
+  {id:'islam',name:'Islam',kitab:"Al-Qur'an Al-Karim",fa:'fa-star-and-crescent',cls:'rel-islam',desc:'Kitab suci umat Islam yang diwahyukan kepada Nabi Muhammad ﷺ, terdiri dari 114 surat dan 6.236 ayat.',src:'API equran.id',badge:'114 Surat · 6.236 Ayat'},
+  {id:'kristen',name:'Kristen',kitab:'Alkitab (Terjemahan Baru)',fa:'fa-cross',cls:'rel-kristen',desc:'Kitab suci umat Kristen terdiri dari Perjanjian Lama (39 kitab) dan Perjanjian Baru (27 kitab).',src:'API Sabda',badge:'66 Kitab · 31.102 Ayat'},
+  {id:'hindu',name:'Hindu',kitab:'Bhagavad Gita',fa:'fa-om',cls:'rel-hindu',desc:'Teks suci Hindu memuat dialog Arjuna dan Dewa Krishna tentang dharma dan kehidupan. Terdiri dari 18 bab dan 700 sloka.',src:'Teks Publik Domain',badge:'18 Bab · 700 Sloka'},
+  {id:'buddha',name:'Buddha',kitab:'Dhammapada',fa:'fa-dharmachakra',cls:'rel-buddha',desc:'Kumpulan 423 syair ajaran Buddha Gautama tentang jalan menuju pencerahan dan pembebasan dari penderitaan.',src:'Teks Publik Domain',badge:'26 Bab · 423 Syair'},
+  {id:'konghucu',name:'Konghucu',kitab:'Da Xue (Ajaran Besar)',fa:'fa-yin-yang',cls:'rel-konghucu',desc:'Salah satu dari Empat Kitab utama Konghucu yang mengajarkan pengembangan diri, keluarga, dan tata negara.',src:'Teks Publik Domain',badge:'10 Bab'},
+];
+const BIBLE=[
+  {id:1,abbr:'Kej',name:'Kejadian',ch:50,t:'PL'},{id:2,abbr:'Kel',name:'Keluaran',ch:40,t:'PL'},{id:3,abbr:'Im',name:'Imamat',ch:27,t:'PL'},{id:4,abbr:'Bil',name:'Bilangan',ch:36,t:'PL'},{id:5,abbr:'Ul',name:'Ulangan',ch:34,t:'PL'},{id:6,abbr:'Yos',name:'Yosua',ch:24,t:'PL'},{id:7,abbr:'Hak',name:'Hakim-hakim',ch:21,t:'PL'},{id:8,abbr:'Rut',name:'Rut',ch:4,t:'PL'},{id:9,abbr:'1Sam',name:'1 Samuel',ch:31,t:'PL'},{id:10,abbr:'2Sam',name:'2 Samuel',ch:24,t:'PL'},{id:11,abbr:'1Raj',name:'1 Raja-raja',ch:22,t:'PL'},{id:12,abbr:'2Raj',name:'2 Raja-raja',ch:25,t:'PL'},{id:13,abbr:'1Taw',name:'1 Tawarikh',ch:29,t:'PL'},{id:14,abbr:'2Taw',name:'2 Tawarikh',ch:36,t:'PL'},{id:15,abbr:'Ezr',name:'Ezra',ch:10,t:'PL'},{id:16,abbr:'Neh',name:'Nehemia',ch:13,t:'PL'},{id:17,abbr:'Est',name:'Ester',ch:10,t:'PL'},{id:18,abbr:'Ayb',name:'Ayub',ch:42,t:'PL'},{id:19,abbr:'Mzm',name:'Mazmur',ch:150,t:'PL'},{id:20,abbr:'Ams',name:'Amsal',ch:31,t:'PL'},{id:21,abbr:'Pkh',name:'Pengkhotbah',ch:12,t:'PL'},{id:22,abbr:'Kid',name:'Kidung Agung',ch:8,t:'PL'},{id:23,abbr:'Yes',name:'Yesaya',ch:66,t:'PL'},{id:24,abbr:'Yer',name:'Yeremia',ch:52,t:'PL'},{id:25,abbr:'Rat',name:'Ratapan',ch:5,t:'PL'},{id:26,abbr:'Yeh',name:'Yehezkiel',ch:48,t:'PL'},{id:27,abbr:'Dan',name:'Daniel',ch:12,t:'PL'},{id:28,abbr:'Hos',name:'Hosea',ch:14,t:'PL'},{id:29,abbr:'Yoel',name:'Yoel',ch:3,t:'PL'},{id:30,abbr:'Am',name:'Amos',ch:9,t:'PL'},{id:31,abbr:'Ob',name:'Obaja',ch:1,t:'PL'},{id:32,abbr:'Yun',name:'Yunus',ch:4,t:'PL'},{id:33,abbr:'Mi',name:'Mikha',ch:7,t:'PL'},{id:34,abbr:'Nah',name:'Nahum',ch:3,t:'PL'},{id:35,abbr:'Hab',name:'Habakuk',ch:3,t:'PL'},{id:36,abbr:'Zef',name:'Zefanya',ch:3,t:'PL'},{id:37,abbr:'Hag',name:'Hagai',ch:2,t:'PL'},{id:38,abbr:'Za',name:'Zakharia',ch:14,t:'PL'},{id:39,abbr:'Mal',name:'Maleakhi',ch:4,t:'PL'},
+  {id:40,abbr:'Mat',name:'Matius',ch:28,t:'PB'},{id:41,abbr:'Mrk',name:'Markus',ch:16,t:'PB'},{id:42,abbr:'Luk',name:'Lukas',ch:24,t:'PB'},{id:43,abbr:'Yoh',name:'Yohanes',ch:21,t:'PB'},{id:44,abbr:'Kis',name:'Kisah Para Rasul',ch:28,t:'PB'},{id:45,abbr:'Rm',name:'Roma',ch:16,t:'PB'},{id:46,abbr:'1Kor',name:'1 Korintus',ch:16,t:'PB'},{id:47,abbr:'2Kor',name:'2 Korintus',ch:13,t:'PB'},{id:48,abbr:'Gal',name:'Galatia',ch:6,t:'PB'},{id:49,abbr:'Ef',name:'Efesus',ch:6,t:'PB'},{id:50,abbr:'Flp',name:'Filipi',ch:4,t:'PB'},{id:51,abbr:'Kol',name:'Kolose',ch:4,t:'PB'},{id:52,abbr:'1Tes',name:'1 Tesalonika',ch:5,t:'PB'},{id:53,abbr:'2Tes',name:'2 Tesalonika',ch:3,t:'PB'},{id:54,abbr:'1Tim',name:'1 Timotius',ch:6,t:'PB'},{id:55,abbr:'2Tim',name:'2 Timotius',ch:4,t:'PB'},{id:56,abbr:'Tit',name:'Titus',ch:3,t:'PB'},{id:57,abbr:'Flm',name:'Filemon',ch:1,t:'PB'},{id:58,abbr:'Ibr',name:'Ibrani',ch:13,t:'PB'},{id:59,abbr:'Yak',name:'Yakobus',ch:5,t:'PB'},{id:60,abbr:'1Ptr',name:'1 Petrus',ch:5,t:'PB'},{id:61,abbr:'2Ptr',name:'2 Petrus',ch:3,t:'PB'},{id:62,abbr:'1Yoh',name:'1 Yohanes',ch:5,t:'PB'},{id:63,abbr:'2Yoh',name:'2 Yohanes',ch:1,t:'PB'},{id:64,abbr:'3Yoh',name:'3 Yohanes',ch:1,t:'PB'},{id:65,abbr:'Yud',name:'Yudas',ch:1,t:'PB'},{id:66,abbr:'Why',name:'Wahyu',ch:22,t:'PB'}
+];
+const GITA=[{n:1,name:'Arjuna Visada Yoga',sub:'Kesedihan Arjuna',v:47},{n:2,name:'Sankhya Yoga',sub:'Jalan Pengetahuan',v:72},{n:3,name:'Karma Yoga',sub:'Jalan Tindakan',v:43},{n:4,name:'Jnana Yoga',sub:'Jalan Kebijaksanaan',v:42},{n:5,name:'Karma Vairagya Yoga',sub:'Pelepasan Tindakan',v:29},{n:6,name:'Abhyasa Yoga',sub:'Jalan Meditasi',v:47},{n:7,name:'Paramahamsa Vijnana Yoga',sub:'Pengetahuan Absolut',v:30},{n:8,name:'Aksara Parabrahma Yoga',sub:'Yang Kekal Abadi',v:28},{n:9,name:'Raja Vidya Yoga',sub:'Pengetahuan Raja',v:34},{n:10,name:'Vibhuti Vistara Yoga',sub:'Manifestasi Ilahi',v:42},{n:11,name:'Vishvarupa Darshana Yoga',sub:'Penglihatan Kosmis',v:55},{n:12,name:'Bhakti Yoga',sub:'Jalan Bhakti',v:20},{n:13,name:'Kshetra Kshetrajna Vibhaga Yoga',sub:'Alam dan Jiwa',v:34},{n:14,name:'Gunatraya Vibhaga Yoga',sub:'Tiga Sifat Alam',v:27},{n:15,name:'Purushottama Yoga',sub:'Yang Maha Tinggi',v:20},{n:16,name:'Daivasura Sampad Vibhaga Yoga',sub:'Sifat Ilahi dan Iblis',v:24},{n:17,name:'Shraddhatraya Vibhaga Yoga',sub:'Tiga Jenis Keyakinan',v:28},{n:18,name:'Moksha Sannyasa Yoga',sub:'Pembebasan Sejati',v:78}];
+const DHAMMA=[{n:1,name:'Yamaka Vagga',sub:'Bab Pasangan',v:20},{n:2,name:'Appamada Vagga',sub:'Bab Kewaspadaan',v:12},{n:3,name:'Citta Vagga',sub:'Bab Pikiran',v:11},{n:4,name:'Puppha Vagga',sub:'Bab Bunga',v:16},{n:5,name:'Bala Vagga',sub:'Bab Orang Bodoh',v:16},{n:6,name:'Pandita Vagga',sub:'Bab Orang Bijaksana',v:14},{n:7,name:'Arahanta Vagga',sub:'Bab Arahat',v:10},{n:8,name:'Sahassa Vagga',sub:'Bab Ribuan',v:16},{n:9,name:'Papa Vagga',sub:'Bab Kejahatan',v:14},{n:10,name:'Danda Vagga',sub:'Bab Hukuman',v:17},{n:11,name:'Jara Vagga',sub:'Bab Ketuaan',v:11},{n:12,name:'Atta Vagga',sub:'Bab Diri',v:10},{n:13,name:'Loka Vagga',sub:'Bab Dunia',v:12},{n:14,name:'Buddha Vagga',sub:'Bab Buddha',v:18},{n:15,name:'Sukha Vagga',sub:'Bab Kebahagiaan',v:12},{n:16,name:'Piya Vagga',sub:'Bab Kasih Sayang',v:12},{n:17,name:'Kodha Vagga',sub:'Bab Kemarahan',v:14},{n:18,name:'Mala Vagga',sub:'Bab Kotoran',v:21},{n:19,name:'Dhammattha Vagga',sub:'Bab Yang Benar',v:17},{n:20,name:'Magga Vagga',sub:'Bab Jalan',v:17},{n:21,name:'Pakinnaka Vagga',sub:'Bab Campuran',v:16},{n:22,name:'Niraya Vagga',sub:'Bab Neraka',v:14},{n:23,name:'Naga Vagga',sub:'Bab Gajah',v:14},{n:24,name:'Tanha Vagga',sub:'Bab Nafsu',v:26},{n:25,name:'Bhikkhu Vagga',sub:'Bab Para Bhikkhu',v:23},{n:26,name:'Brahmana Vagga',sub:'Bab Brahmana',v:41}];
+const DAXUE=[{n:1,name:'Teks Utama',sub:'Tiga Prinsip Agung dan Delapan Tangga',v:11},{n:2,name:'Bab I',sub:'Pembaharuan Diri dan Makna Berbuat Baik',v:5},{n:3,name:'Bab II',sub:'Berhenti pada Kebaikan Tertinggi',v:6},{n:4,name:'Bab III',sub:'Pengetahuan Penuh dan Ketulus-ikhlasan',v:4},{n:5,name:'Bab IV',sub:'Meluruskan Pikiran dan Membina Diri',v:5},{n:6,name:'Bab V',sub:'Membina Diri dan Mengatur Keluarga',v:6},{n:7,name:'Bab VI',sub:'Mengatur Keluarga dan Memerintah Negara',v:7},{n:8,name:'Bab VII',sub:'Memerintah Negara dan Mendamaikan Dunia',v:8},{n:9,name:'Bab VIII',sub:'Pemimpin sebagai Teladan Rakyat',v:6},{n:10,name:'Bab IX',sub:'Penggunaan Sumber Daya dan Keadilan',v:8}];
+const STXT={gita:{'1-1':'Dhritarashtra berkata: O Sanjaya, setelah berkumpul di Medan Dharma — Kurukshetra, dengan keinginan berperang, apakah yang dilakukan oleh para pihakku dan pihak Pandawa?','1-2':'Sanjaya berkata: Setelah melihat tentara Pandawa yang tersusun dalam barisan tempur, Raja Duryodhana mendekati gurunya Drona dan berkata demikian.','2-20':'Jiwa (Atman) tidak pernah dilahirkan dan tidak pernah mati. Ia tidak dilahirkan, kekal, abadi, dan sangat tua. Ia tidak terbunuh ketika tubuh terbunuh.','2-47':'Engkau hanya berhak atas pekerjaan (karma), tetapi tidak pernah berhak atas buahnya. Janganlah buah tindakan menjadi motifmu.','12-6':'Mereka yang memuja-Ku, menyerahkan semua tindakan kepada-Ku, menjadikan Aku tujuan tertinggi, bermeditasi dengan bhakti tak tergoyahkan.'},dhamma:{'1-1':'Pikiran adalah pelopor dari semua tindakan. Jika seseorang berbicara atau bertindak dengan pikiran jahat, maka penderitaan akan mengikutinya bagaikan roda yang mengikuti kaki lembu.','1-2':'Jika seseorang berbicara atau bertindak dengan pikiran murni, maka kebahagiaan akan mengikutinya bagaikan bayangan yang tidak pernah meninggalkannya.','2-1':'Kewaspadaan adalah jalan menuju keabadian; ketidakwaspadaan adalah jalan menuju kematian.','3-1':'Pikiran yang gelisah, mudah terganggu — orang bijaksana meluruskannya sebagaimana pembuat anak panah meluruskan anak panahnya.'},konghucu:{'1-1':'Ajaran Besar dimaksudkan bagi para dewasa. Para raja suci dahulu mendirikan perguruan tinggi di negeri tengah dan perguruan rendah di setiap penjuru.','1-2':'Para pelajar yang ingin menerangi kebajikan dalam dunia, pertama-tama harus mengatur negaranya. Untuk mengatur negaranya, pertama-tama harus menyelaraskan keluarganya.','1-3':'Untuk menyelaraskan keluarganya, pertama-tama harus membina dirinya. Untuk membina dirinya, pertama-tama harus meluruskan pikirannya.','1-4':'Perluasan pengetahuan terletak pada menyelidiki hakikat segala sesuatu.'}};
+
+/* STATE */
+let S={rel:null,book:null,chap:null,qlist:[]};
+let playing=false;
+const aud=()=>document.getElementById('aud');
+
+/* THEME */
+let dark=localStorage.getItem('ksn')!=='light';
+function applyTh(){document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.getElementById('thico').className=dark?'fa-solid fa-moon':'fa-solid fa-sun';}
+function toggleTheme(e){rip(e);dark=!dark;localStorage.setItem('ksn',dark?'dark':'light');applyTh();toast(dark?'Tema malam':'Tema terang','fa-circle-half-stroke');}
+applyTh();
+
+/* UTILS */
+function rip(e){const b=e.currentTarget,r=document.createElement('span');const rc=b.getBoundingClientRect(),sz=Math.max(rc.width,rc.height);r.className='ripple';r.style.cssText=`width:${sz}px;height:${sz}px;left:${e.clientX-rc.left-sz/2}px;top:${e.clientY-rc.top-sz/2}px`;b.appendChild(r);r.addEventListener('animationend',()=>r.remove());}
+function toast(msg,ico='fa-check'){const b=document.getElementById('tbox'),t=document.createElement('div');t.className='toast';t.innerHTML=`<i class="fa-solid ${ico} tico"></i>${msg}`;b.appendChild(t);setTimeout(()=>{t.classList.add('out');t.addEventListener('animationend',()=>t.remove());},2600);}
+function fmt(s){if(!s||isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;}
+window.addEventListener('scroll',()=>document.getElementById('stbtn').classList.toggle('on',scrollY>200));
+function stopAud(){const a=aud();if(a){a.pause();a.src='';}playing=false;updP();}
+function updP(){const el=document.getElementById('pico');if(el)el.className=playing?'fa-solid fa-pause':'fa-solid fa-play';}
+
+/* NAV STATE — key function */
+function setNavState(isHome){
+  document.getElementById('nbk').classList.toggle('show',!isHome);
+  document.getElementById('nmid').classList.toggle('center',!isHome);
+}
+
+function showPage(id){
+  ['ph','pbook','pchap','pread'].forEach(p=>document.getElementById(p).style.display=p===id?'block':'none');
+  setNavState(id==='ph');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(()=>{const el=document.getElementById(id);el.classList.add('pf');setTimeout(()=>el.classList.remove('pf'),350);},10);
+}
+
+function doSearch(v){document.getElementById('si').value=v;const m=document.getElementById('simob');if(m)m.value=v;const bs=document.getElementById('bsrch');if(bs)bs.value=v;filterList(v);}
+
+/* NAV BACK */
+function navBack(){
+  if(!S.rel){goHome();return;}
+  if(S.rel.id==='bible'&&S.chap&&S.book){S.chap=null;stopAud();openBibleBook(S.book.id);return;}
+  if(S.chap){S.chap=null;stopAud();openRel(S.rel.id);return;}
+  goHome();
+}
+
+/* HOME */
+function goHome(){
+  stopAud();S={rel:null,book:null,chap:null,qlist:S.qlist};
+  document.title='Kitab Suci Nusantara';
+  document.getElementById('rgrid').innerHTML=REL.map(r=>`
+    <div class="rcard ${r.cls}" onclick="openRel('${r.id}')">
+      <div class="r-ico"><i class="fa-solid ${r.fa}"></i></div>
+      <div class="r-name">${r.name}</div>
+      <div class="r-kitab">${r.kitab}</div>
+      <div class="r-desc">${r.desc}</div>
+      <div class="r-foot">
+        <div class="r-src"><i class="fa-solid fa-database"></i>${r.src}</div>
+        <div class="r-arr"><i class="fa-solid fa-chevron-right"></i></div>
+      </div>
+    </div>`).join('');
+  showPage('ph');
+}
+
+/* RELIGION */
+async function openRel(id){
+  S.rel=REL.find(r=>r.id===id);S.book=null;S.chap=null;
+  showPage('pbook');
+  document.getElementById('bc1').innerHTML=`<span onclick="goHome()">Beranda</span><span class="sep"> / </span><span class="cur">${S.rel.name}</span>`;
+  document.getElementById('phero1').innerHTML=`<div class="phero-ico"><i class="fa-solid ${S.rel.fa}"></i></div><div class="phero-title">${S.rel.kitab}</div><div class="phero-sub">${S.rel.name}</div><div class="phero-tags"><span class="ptag">${S.rel.badge}</span><span class="ptag">${S.rel.src}</span></div>`;
+  document.getElementById('lhead').textContent=S.rel.id==='islam'?'Pilih Surat':S.rel.id==='kristen'?'Pilih Kitab':'Pilih Bab';
+  document.getElementById('bsrch-wrap').style.display=(S.rel.id==='islam'||S.rel.id==='kristen')?'block':'none';
+  document.getElementById('booklist').innerHTML='<div class="skel"></div>'.repeat(5);
+  if(S.rel.id==='islam') await loadQuran();
+  else if(S.rel.id==='kristen') renderBibleBooks(BIBLE);
+  else renderStaticList(S.rel.id==='hindu'?GITA:S.rel.id==='buddha'?DHAMMA:DAXUE);
+}
+
+async function loadQuran(){
+  try{const r=await fetch('https://equran.id/api/v2/surat');const d=await r.json();S.qlist=d.data;renderQuranList(d.data);}
+  catch{document.getElementById('booklist').innerHTML='<div class="empty"><div class="empty-i"><i class="fa-solid fa-wifi"></i></div><div class="empty-t">Gagal memuat</div><div class="empty-s">Periksa koneksi internet.</div></div>';toast("Gagal memuat Al-Qur'an",'fa-triangle-exclamation');}
+}
+function renderQuranList(list){document.getElementById('booklist').innerHTML=list.map(s=>`<div class="irow" onclick="openQuranSurah(${s.nomor})"><div class="i-num">${s.nomor}</div><div class="i-info"><div class="i-name">${s.namaLatin}</div><div class="i-sub">${s.arti}</div><div class="i-meta"><div class="i-dot"></div>${s.jumlahAyat} ayat · ${s.tempatTurun}</div></div><div class="i-ar">${s.nama}</div></div>`).join('');}
+function filterList(v){const q=v.toLowerCase().trim();if(!S.rel)return;if(S.rel.id==='islam'){renderQuranList(S.qlist.filter(s=>!q||s.namaLatin.toLowerCase().includes(q)||s.arti.toLowerCase().includes(q)||String(s.nomor).includes(q)||s.nama.includes(q)));}else if(S.rel.id==='kristen'){renderBibleBooks(BIBLE.filter(b=>!q||b.name.toLowerCase().includes(q)||b.abbr.toLowerCase().includes(q)));}}
+function renderBibleBooks(list){document.getElementById('booklist').innerHTML=list.map(b=>`<div class="irow" onclick="openBibleBook(${b.id})"><div class="i-num">${b.id}</div><div class="i-info"><div class="i-name">${b.name}</div><div class="i-sub">${b.t==='PL'?'Perjanjian Lama':'Perjanjian Baru'}</div><div class="i-meta"><div class="i-dot"></div>${b.ch} pasal · ${b.abbr}</div></div></div>`).join('');}
+function renderStaticList(chapters){document.getElementById('booklist').innerHTML=chapters.map(c=>`<div class="irow" onclick="openStaticChap(${c.n})"><div class="i-num">${c.n}</div><div class="i-info"><div class="i-name">${c.name}</div><div class="i-sub">${c.sub}</div><div class="i-meta"><div class="i-dot"></div>${c.v} ayat/sloka</div></div></div>`).join('');}
+
+/* QURAN READ */
+async function openQuranSurah(n){
+  stopAud();S.chap=n;showPage('pread');
+  document.getElementById('vlist').innerHTML='<div class="vskel"></div>'.repeat(4);
+  document.getElementById('phero3').innerHTML='<div style="height:100px;display:flex;align-items:center;justify-content:center;color:var(--t3)"><i class="fa-solid fa-spinner fa-spin" style="margin-right:7px"></i>Memuat…</div>';
+  try{
+    const r=await fetch(`https://equran.id/api/v2/surat/${n}`);const d=await r.json();S.book=d.data;const s=d.data;
+    document.title=`${s.namaLatin} — Kitab Suci Nusantara`;
+    document.getElementById('bc3').innerHTML=`<span onclick="goHome()">Beranda</span><span class="sep"> / </span><span onclick="openRel('islam')">Al-Qur'an</span><span class="sep"> / </span><span class="cur">${s.namaLatin}</span>`;
+    document.getElementById('phero3').innerHTML=`<div class="phero-ico"><i class="fa-solid fa-star-and-crescent"></i></div><div class="phero-title" style="font-family:var(--fa);font-size:clamp(1.4rem,4vw,2rem);color:var(--gold2)">${s.nama}</div><div class="phero-title" style="margin-top:3px">${s.namaLatin}</div><div class="phero-sub">"${s.arti}"</div><div class="phero-tags"><span class="ptag">${s.tempatTurun}</span><span class="ptag">${s.jumlahAyat} Ayat</span><span class="ptag">Surat ke-${s.nomor}</span></div>`;
+    if(s.audioFull){const url=s.audioFull['01']||Object.values(s.audioFull)[0];aud().src=url;bindAud();document.getElementById('audiobox').innerHTML=`<div class="player"><button class="pbtn" onclick="toggleAud()"><i id="pico" class="fa-solid fa-play"></i></button><div class="p-info"><div class="p-title">${s.namaLatin} — Murottal</div><div class="p-bar" onclick="seekA(event)"><div class="p-fill" id="pfill"></div></div><div class="p-times"><span id="pcur">0:00</span><span id="ptot">--:--</span></div></div><div class="p-qari"><div class="p-dot off" id="pdot"></div>Murottal</div></div>`;}
+    document.getElementById('cnav').innerHTML=`${n>1?`<button class="cnavbtn" onclick="openQuranSurah(${n-1})"><i class="fa-solid fa-chevron-left"></i> Sebelumnya</button>`:''}${n<114?`<button class="cnavbtn" onclick="openQuranSurah(${n+1})">Selanjutnya <i class="fa-solid fa-chevron-right"></i></button>`:''}`;
+    let html=n!==9?'<div class="bism"><div class="bism-t">بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</div></div>':'';
+    html+=s.ayat.map(a=>`<div class="vcard" id="vc-${a.nomorAyat}"><div class="vnum">${a.nomorAyat}</div><div class="v-ar">${a.teksArab}</div><div class="v-lat">${a.teksLatin}</div><div class="v-tlbl">Terjemahan</div><div class="v-tr">${a.teksIndonesia}</div></div>`).join('');
+    document.getElementById('vlist').innerHTML=html;
+  }catch{toast('Gagal memuat surat','fa-triangle-exclamation');openRel('islam');}
+}
+
+/* BIBLE */
+function openBibleBook(bookId){
+  const b=BIBLE.find(x=>x.id===bookId);S.book=b;S.chap=null;showPage('pchap');
+  document.getElementById('bc2').innerHTML=`<span onclick="goHome()">Beranda</span><span class="sep"> / </span><span onclick="openRel('kristen')">Alkitab</span><span class="sep"> / </span><span class="cur">${b.name}</span>`;
+  document.getElementById('phero2').innerHTML=`<div class="phero-ico"><i class="fa-solid fa-cross"></i></div><div class="phero-title">${b.name}</div><div class="phero-sub">${b.t==='PL'?'Perjanjian Lama':'Perjanjian Baru'}</div><div class="phero-tags"><span class="ptag">${b.ch} Pasal</span><span class="ptag">${b.abbr}</span></div>`;
+  document.getElementById('chaplist').innerHTML=Array.from({length:b.ch},(_,i)=>`<div class="irow" onclick="openBibleChap('${b.abbr}',${i+1},${b.id})"><div class="i-num">${i+1}</div><div class="i-info"><div class="i-name">Pasal ${i+1}</div><div class="i-sub">${b.name} ${i+1}</div></div></div>`).join('');
+}
+async function openBibleChap(abbr,chap,bookId){
+  stopAud();S.chap=chap;const b=BIBLE.find(x=>x.id===bookId);showPage('pread');
+  document.title=`${b.name} ${chap} — Kitab Suci Nusantara`;
+  document.getElementById('audiobox').innerHTML='';
+  document.getElementById('bc3').innerHTML=`<span onclick="goHome()">Beranda</span><span class="sep"> / </span><span onclick="openRel('kristen')">Alkitab</span><span class="sep"> / </span><span onclick="openBibleBook(${b.id})">${b.name}</span><span class="sep"> / </span><span class="cur">Pasal ${chap}</span>`;
+  document.getElementById('phero3').innerHTML=`<div class="phero-ico"><i class="fa-solid fa-cross"></i></div><div class="phero-title">${b.name} — Pasal ${chap}</div><div class="phero-sub">${b.t==='PL'?'Perjanjian Lama':'Perjanjian Baru'}</div><div class="phero-tags"><span class="ptag">Alkitab TB</span></div>`;
+  document.getElementById('cnav').innerHTML=`${chap>1?`<button class="cnavbtn" onclick="openBibleChap('${abbr}',${chap-1},${b.id})"><i class="fa-solid fa-chevron-left"></i> Sebelumnya</button>`:''}${chap<b.ch?`<button class="cnavbtn" onclick="openBibleChap('${abbr}',${chap+1},${b.id})">Selanjutnya <i class="fa-solid fa-chevron-right"></i></button>`:''}`;
+  document.getElementById('vlist').innerHTML='<div class="vskel"></div>'.repeat(4);
+  try{
+    const res=await fetch(`https://beeble.vercel.app/api/v1/passage/${abbr.toLowerCase()}/${chap}?ver=tb`);
+    const d=await res.json();const vv=d.verses||d.data?.verses||[];
+    if(!vv.length)throw new Error();
+    document.getElementById('vlist').innerHTML=vv.map((v,i)=>`<div class="vcard vcard-plain" id="vc-${i+1}"><div class="vnum">${v.verse||i+1}</div><div class="v-ar">${v.content||v.text||''}</div></div>`).join('');
+  }catch{document.getElementById('vlist').innerHTML='<div class="empty"><div class="empty-i"><i class="fa-solid fa-cloud-slash"></i></div><div class="empty-t">Konten tidak tersedia</div><div class="empty-s">Coba lagi atau periksa koneksi.</div></div>';toast('Gagal memuat Alkitab','fa-triangle-exclamation');}
+}
+
+/* STATIC */
+function openStaticChap(n){
+  stopAud();const r=S.rel;
+  const chapters=r.id==='hindu'?GITA:r.id==='buddha'?DHAMMA:DAXUE;
+  const key=r.id==='hindu'?'gita':r.id==='buddha'?'dhamma':'konghucu';
+  const c=chapters.find(x=>x.n===n);S.book=c;S.chap=n;showPage('pread');
+  document.title=`${c.name} — Kitab Suci Nusantara`;
+  document.getElementById('audiobox').innerHTML='';
+  document.getElementById('bc3').innerHTML=`<span onclick="goHome()">Beranda</span><span class="sep"> / </span><span onclick="openRel('${r.id}')">${r.kitab}</span><span class="sep"> / </span><span class="cur">${c.name}</span>`;
+  document.getElementById('phero3').innerHTML=`<div class="phero-ico"><i class="fa-solid ${r.fa}"></i></div><div class="phero-title">${c.name}</div><div class="phero-sub">${c.sub}</div><div class="phero-tags"><span class="ptag">${r.kitab}</span><span class="ptag">${c.v} ${r.id==='hindu'?'Sloka':'Syair/Ayat'}</span></div>`;
+  document.getElementById('cnav').innerHTML=`${n>1?`<button class="cnavbtn" onclick="openStaticChap(${n-1})"><i class="fa-solid fa-chevron-left"></i> Sebelumnya</button>`:''}${n<chapters.length?`<button class="cnavbtn" onclick="openStaticChap(${n+1})">Selanjutnya <i class="fa-solid fa-chevron-right"></i></button>`:''}`;
+  let html='';
+  for(let i=1;i<=c.v;i++){const txt=STXT[key]?.[`${n}-${i}`];html+=`<div class="vcard vcard-plain" id="vc-${i}"><div class="vnum">${i}</div><div class="v-ar">${txt||`<span style="color:var(--t3);font-style:italic">[ ${r.id==='hindu'?'Sloka':'Ayat'} ${i} — tersedia dalam cetakan resmi ${r.kitab} ]</span>`}</div></div>`;}
+  document.getElementById('vlist').innerHTML=html;
+}
+
+/* AUDIO */
+function bindAud(){
+  const a=aud();
+  a.addEventListener('timeupdate',()=>{const p=a.duration?(a.currentTime/a.duration)*100:0;const pf=document.getElementById('pfill');if(pf)pf.style.width=p+'%';const pc=document.getElementById('pcur');if(pc)pc.textContent=fmt(a.currentTime);hlAy(a);});
+  a.addEventListener('loadedmetadata',()=>{const pt=document.getElementById('ptot');if(pt)pt.textContent=fmt(a.duration);});
+  a.addEventListener('ended',()=>{playing=false;updP();const pd=document.getElementById('pdot');if(pd)pd.classList.add('off');document.querySelectorAll('.vcard').forEach(e=>e.classList.remove('on'));});
+}
+function toggleAud(){const a=aud();if(!a||!a.src)return;if(playing){a.pause();playing=false;}else{a.play();playing=true;toast('Memutar murottal','fa-volume-high');}updP();const pd=document.getElementById('pdot');if(pd)pd.classList.toggle('off',!playing);}
+function seekA(e){const a=aud();if(!a||!a.duration)return;a.currentTime=((e.clientX-e.currentTarget.getBoundingClientRect().left)/e.currentTarget.offsetWidth)*a.duration;}
+function hlAy(a){if(!S.book?.ayat||!a.duration)return;const idx=Math.floor((a.currentTime/a.duration)*S.book.ayat.length);const ay=S.book.ayat[Math.min(idx,S.book.ayat.length-1)];if(!ay)return;document.querySelectorAll('.vcard').forEach(e=>e.classList.remove('on'));document.getElementById(`vc-${ay.nomorAyat}`)?.classList.add('on');}
+
+/* INIT */
+window.addEventListener('DOMContentLoaded',()=>{
+  window.addEventListener('resize',()=>{const m=document.getElementById('msrch');if(m)m.style.display=innerWidth<=520?'block':'none';});
+  setTimeout(()=>{
+    goHome();
+    const l=document.getElementById('ldr');l.classList.add('out');setTimeout(()=>l.remove(),550);
+  },1800);
+});
+</script>
+</body>
+</html>
